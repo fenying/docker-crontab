@@ -1,0 +1,16 @@
+FROM alpine:latest
+
+RUN mkdir /data \ 
+    && echo '#!/bin/sh' > /start-cron.sh \
+    && echo 'if [[ -z "$CRONTAB_LOG_LEVEL" ]]; then' >> /start-cron.sh \
+    && echo '    export CRONTAB_LOG_LEVEL=0;' >> /start-cron.sh \
+    && echo 'fi;' >> /start-cron.sh \
+    && echo 'if [[ -f /data/crontab ]]; then' >> /start-cron.sh \
+    && echo '    crontab /data/crontab' >> /start-cron.sh \
+    && echo '    crond -f -l $CRONTAB_LOG_LEVEL -L /data/output' >> /start-cron.sh \
+    && echo 'else' >> /start-cron.sh \
+    && echo '    echo "File /data/crontab not found"' >> /start-cron.sh \
+    && echo 'fi;' >> /start-cron.sh \
+    && chmod 0755 /start-cron.sh
+
+CMD ["sh", "/start-cron.sh"]

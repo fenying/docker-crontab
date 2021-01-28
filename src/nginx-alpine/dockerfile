@@ -1,0 +1,19 @@
+FROM nginx:alpine
+
+RUN mkdir -p /data/ \
+    && echo '#!/bin/sh' > /nginx-start.sh \
+    && echo 'if [[ -f "/data/crontab" ]]; then' >> /nginx-start.sh \
+    && echo '    if ! crontab /data/crontab; then' >> /nginx-start.sh \
+    && echo '        echo "Failed to load crontab configuration.";' >> /nginx-start.sh \
+    && echo '        exit;' >> /nginx-start.sh \
+    && echo '    fi;' >> /nginx-start.sh \
+    && echo '    if ! crond -b -L /data/crond.log; then' >> /nginx-start.sh \
+    && echo '        echo "Failed to start crontab.";' >> /nginx-start.sh \
+    && echo '        exit;' >> /nginx-start.sh \
+    && echo '    fi;' >> /nginx-start.sh \
+    && echo '    echo "Started crontab";' >> /nginx-start.sh \
+    && echo 'fi;' >> /nginx-start.sh \
+    && echo 'nginx -g "daemon off;"' >> /nginx-start.sh \
+    && chmod 0755 /nginx-start.sh
+
+CMD ["/nginx-start.sh"]

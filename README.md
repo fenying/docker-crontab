@@ -7,3 +7,8 @@
 - Start the container without extra cmd.
 
     > e.g. `docker run -v$PWD/crontab:/data/crontab -v$PWD/output:/data/output fenying/crontab:alpine`
+
+## Tags
+
+- alpine
+- nginx-alpine
